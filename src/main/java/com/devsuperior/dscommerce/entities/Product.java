@@ -8,8 +8,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -31,6 +33,9 @@ public class Product {
     // usamos Set para indicar pro JPA que não pode haver repetição do par
     // categoria_id e produto_id na tabela do relacionamento -- lembrando que não
     // entra no construtor, nem tem set
+
+    @OneToMany(mappedBy = "id.product")
+    private Set<OrderItem> items = new HashSet<>();
 
     public Product() {
     }
@@ -85,6 +90,10 @@ public class Product {
 
     public Set<Category> getCategories() {
         return categories;
+    }
+
+    public List<Order> getOrders() {
+        return items.stream().map(x -> x.getOrder()).toList();
     }
 
 }
