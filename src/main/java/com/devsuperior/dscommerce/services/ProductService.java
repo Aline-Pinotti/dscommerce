@@ -25,12 +25,25 @@ public class ProductService {
         return dto;
     }
 
-    @Transactional(readOnly = true) // pra nao dar locking no banco de dados
+    @Transactional(readOnly = true)
     public Page<ProductDTO> findAll(Pageable pageable) {
 
         Page<Product> result = repository.findAll(pageable);
-        // return result.stream().map(x -> new ProductDTO(x)).toList(); // sem
-        // pageable...
+        // return result.stream().map(x -> new ProductDTO(x)).toList(); // sem pageable
         return result.map(x -> new ProductDTO(x)); // map direto porq Page já é um stream do Java
+    }
+
+    @Transactional
+    public ProductDTO insert(ProductDTO dto) {
+
+        Product entity = new Product();
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setPrice(dto.getPrice());
+        entity.setImgUrl(dto.getImgUrl());
+
+        entity = repository.save(entity);
+        return new ProductDTO(entity);
+
     }
 }
