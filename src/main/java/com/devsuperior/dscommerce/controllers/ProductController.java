@@ -36,20 +36,6 @@ public class ProductController {
         return ResponseEntity.ok(dto); // retorna 202
     }
 
-    /*
-     * //sem @ControllerAdvice
-     * public ResponseEntity<?> findById(@PathVariable Long id) {
-     * try{
-     * ProductDTO dto = service.findById(id);
-     * return ResponseEntity.ok(dto); // retorna 202
-     * } catch (ResourceNotFoundException e) {
-     * CustomError err = new CustomError(Instant.now(), 404, e.getMessage(),
-     * "caminho url...")
-     * return ResponseEntity.status(404).body(err);
-     * }
-     * }
-     */
-
     @GetMapping
     public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable) {
         Page<ProductDTO> dtoPage = service.findAll(pageable);
@@ -76,5 +62,19 @@ public class ProductController {
         service.delete(id);
         return ResponseEntity.noContent().build(); // retorna 204
     }
+
+    /*
+     * //sem @ControllerAdvice
+     * public ResponseEntity<?> findById(@PathVariable Long id) {
+     * try{
+     * ProductDTO dto = service.findById(id);
+     * return ResponseEntity.ok(dto); // retorna 202
+     * } catch (ResourceNotFoundException e) {
+     * CustomError err = new CustomError(Instant.now(), 404, e.getMessage(),
+     * "caminho url...")
+     * return ResponseEntity.status(404).body(err);
+     * }
+     * }
+     */
 
 }

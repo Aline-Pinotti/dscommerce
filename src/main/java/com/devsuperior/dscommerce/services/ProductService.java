@@ -11,6 +11,8 @@ import com.devsuperior.dscommerce.entities.Product;
 import com.devsuperior.dscommerce.repositories.ProductRepository;
 import com.devsuperior.dscommerce.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class ProductService {
 
@@ -30,8 +32,11 @@ public class ProductService {
         // Product product = repository.findById(id).orElseThrow(() -> new
         // IllegalArgumentException("Id not found")); //sem exception customizada
         Product product = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado")); //interceptando a exceção do Optional e lançando a própria exceção
-                // importante lançar as próprias exceções e serviços para manter a arquitetura organizada, a camada de serviço é responsável pelas próprias exceções
+                .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado")); // interceptando a exceção
+                                                                                             // do Optional e lançando a
+                                                                                             // própria exceção
+        // importante lançar as próprias exceções e serviços para manter a arquitetura
+        // organizada, a camada de serviço é responsável pelas próprias exceções
         ProductDTO dto = new ProductDTO(product);
         return dto;
     }
@@ -57,13 +62,17 @@ public class ProductService {
 
     @Transactional
     public ProductDTO update(Long id, ProductDTO dto) {
+        try {
+            Product entity = repository.getReferenceById(id);
 
-        Product entity = repository.getReferenceById(id);
+            copyDtoToEntity(dto, entity);
 
-        copyDtoToEntity(dto, entity);
+            entity = repository.save(entity);
+            return new ProductDTO(entity);
 
-        entity = repository.save(entity);
-        return new ProductDTO(entity);
+        } catch (EntityNotFoundException e) { // vai ser interceptado pelo Handler
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
 
     }
 
