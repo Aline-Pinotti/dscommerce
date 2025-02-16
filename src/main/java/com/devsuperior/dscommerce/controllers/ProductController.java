@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping(value = "/products")
@@ -43,7 +44,13 @@ public class ProductController {
         // boa prática
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri(); // link pro recurso criado no cabeçalho da resposta
-        return ResponseEntity.created(uri).body(dto);// retorna 201
+        return ResponseEntity.created(uri).body(dto); // retorna 201
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO dto) {
+        dto = service.update(id, dto);
+        return ResponseEntity.ok(dto); // retorna 202
     }
 
 }
