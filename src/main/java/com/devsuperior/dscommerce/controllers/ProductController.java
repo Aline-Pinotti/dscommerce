@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.net.URI;
 
@@ -36,10 +37,20 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable) {
-        Page<ProductDTO> dtoPage = service.findAll(pageable);
-        return ResponseEntity.ok(dtoPage);
+    public ResponseEntity<Page<ProductDTO>> findAll(
+            @RequestParam(name = "name", defaultValue = "") String name,
+            Pageable pageable) {
+        Page<ProductDTO> dto = service.findAll(name, pageable);
+        return ResponseEntity.ok(dto);
     }
+
+    /*
+     * @GetMapping
+     * public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable) {
+     * Page<ProductDTO> dtoPage = service.findAll(pageable);
+     * return ResponseEntity.ok(dtoPage);
+     * }
+     */
 
     @PostMapping
     public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO dto) {

@@ -45,12 +45,23 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductDTO> findAll(Pageable pageable) {
+    public Page<ProductDTO> findAll(String name, Pageable pageable) {
 
-        Page<Product> result = repository.findAll(pageable);
-        // return result.stream().map(x -> new ProductDTO(x)).toList(); // sem pageable
-        return result.map(x -> new ProductDTO(x)); // map direto porq Page já é um stream do Java
+        Page<Product> result = repository.searchByName(name, pageable);
+        return result.map(x -> new ProductDTO(x));
     }
+
+    // quando usava o metodo padrão do JPA
+    /*
+     * public Page<ProductDTO> findAll(Pageable pageable) {
+     * 
+     * Page<Product> result = repository.findAll(pageable);
+     * // return result.stream().map(x -> new ProductDTO(x)).toList(); // sem
+     * pageable
+     * return result.map(x -> new ProductDTO(x)); // map direto porq Page já é um
+     * stream do Java
+     * }
+     */
 
     @Transactional
     public ProductDTO insert(ProductDTO dto) {
@@ -79,8 +90,11 @@ public class ProductService {
 
     }
 
-    // Para não lançar exceção do banco de dados (H2), usamos o propagation, informando que só vai lançar a exceção do DB se não estiver no contexto dessa annotation
-    // Propagation.SUPPORTS somente executa a transação se esse método estiver no contexto e outra transação - para capturar o DataIntegrityViolationException
+    // Para não lançar exceção do banco de dados (H2), usamos o propagation,
+    // informando que só vai lançar a exceção do DB se não estiver no contexto dessa
+    // annotation
+    // Propagation.SUPPORTS somente executa a transação se esse método estiver no
+    // contexto e outra transação - para capturar o DataIntegrityViolationException
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
