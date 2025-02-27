@@ -67,14 +67,13 @@ public class AuthorizationServerConfig {
 	@Autowired
 	private UserDetailsService userDetailsService;
 
-	@SuppressWarnings("removal")
 	@Bean
 	@Order(2) // order 1 e 3 no ResourceServerConfig
-	public SecurityFilterChain asSecurityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain asSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-		OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-		// applyDefaultSecurity deprecated, implements like
-		// authorizationServerSecurityFilterChain above
+		HttpSecurity http = httpSecurity.securityMatcher("/**");
+
+		http.with(OAuth2AuthorizationServerConfigurer.authorizationServer(), Customizer.withDefaults());
 
 		// @formatter:off
 		http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
@@ -87,6 +86,7 @@ public class AuthorizationServerConfig {
 
 		return http.build();
 	}
+	// <https://docs.spring.io/spring-authorization-server/reference/protocol-endpoints.html#oauth2-authorization-server-metadata-endpoint>
 
 	@Bean
 	public OAuth2AuthorizationService authorizationService() {
@@ -197,21 +197,4 @@ public class AuthorizationServerConfig {
 		return keyPair;
 	}
 
-	// to test later
-	/*@Bean
-	@Order(Ordered.HIGHEST_PRECEDENCE)
-	public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-		// @formatter:off
-
-        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
-            OAuth2AuthorizationServerConfigurer.authorizationServer().oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
-        http        
-            .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-            .with(authorizationServerConfigurer, Customizer.withDefaults())
-            .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
-            .exceptionHandling((exceptions) -> exceptions.defaultAuthenticationEntryPointFor(
-                  new LoginUrlAuthenticationEntryPoint("/login"), new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
-        // @formatter:on
-		return http.build();
-	}*/
 }
