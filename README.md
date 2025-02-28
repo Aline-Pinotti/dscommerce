@@ -4,6 +4,8 @@
 *https://devsuperior.com.br/*
 
 
+🔗[Documento de requisitos](<Documento de requisitos DSCommerce.pdf>)
+
 Você deverá entregar o projeto DSCommerce estruturado e com todas funcionalidades implementadas conforme as aulas.
 O projeto deve ser implementado com Java e Spring Boot, usando banco de dados H2, conforme aulas.
 Para atestar que você implementou gradualmente o projeto, será exigido que seu projeto no Github tenha pelo menos 12 commits no seu usuário do Github.
